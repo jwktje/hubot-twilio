@@ -12,7 +12,7 @@ class Twilio extends Adapter
 
   send: (user, strings...) ->
     message = strings.join "\n"
-    console.log("Send to: "+user.id)
+    console.log("Send to: "+user)
     @send_sms message, user.id, (err, body) ->
       if err or not body?
         console.log "Error sending reply SMS: #{err}"
