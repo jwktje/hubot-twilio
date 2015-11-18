@@ -1,6 +1,5 @@
 {Robot, Adapter, TextMessage}   = require("hubot")
 
-HTTP    = require "http"
 QS      = require "querystring"
 
 class Twilio extends Adapter
@@ -13,7 +12,7 @@ class Twilio extends Adapter
 
   send: (user, strings...) ->
     message = strings.join "\n"
-
+    console.log("Send to: "+user.id)
     @send_sms message, user.id, (err, body) ->
       if err or not body?
         console.log "Error sending reply SMS: #{err}"
@@ -43,7 +42,7 @@ class Twilio extends Adapter
 
   receive_sms: (body, from) ->
     return if body.length is 0
-    user = @userForId from
+    user = @robot.brain.userForId from
 
 		# TODO Assign self.robot.name here instead of 
     # if body.match(/^Nurph\b/i) is null
@@ -56,7 +55,7 @@ class Twilio extends Adapter
     auth = new Buffer(@sid + ':' + @token).toString("base64")
     data = QS.stringify From: @from, To: to, Body: message
 
-    @http("https://api.twilio.com")
+    @robot.http("https://api.twilio.com")
       .path("/2010-04-01/Accounts/#{@sid}/Messages.json")
       .header("Authorization", "Basic #{auth}")
       .header("Content-Type", "application/x-www-form-urlencoded")
